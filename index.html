@@ -821,6 +821,8 @@ const vocab = {
   "vivere": "Driv",
   "volare": "Zhurk",
   "tradire": "Drakthulrak",
+  "essere": "Zovak",
+  "avere": "Vrekul",
   "dovere": "Skurvath",
   "avere": "Vrekul",
   "morto": "Dravth", "morta": "Dravth", "morti": "Dravth",
@@ -1411,6 +1413,30 @@ const vocab = {
   "dopo di": "Grivnulthrukth",
   "alleato": "Xivthralvok",
   "nemico": "Thrakvorn",
+  "nemici": "Thrakvorn",
+  "stanco": "Vrekthul",
+  "stanca": "Vrekthul",
+  "stanchi": "Vrekthul",
+  "stanche": "Vrekthul",
+  "troppo": "Zhulrakval",
+  "troppi": "Zhulrakval",
+  "troppa": "Zhulrakval",
+  "troppe": "Zhulrakval",
+  "tanto": "Zharval",
+  "tanti": "Zharval",
+  "poco": "Veluthiv",
+  "pochi": "Veluthiv",
+  "abbastanza": "Thivralzhar",
+  "forte": "Grivok",
+  "debole": "Skorvak",
+  "vivo": "Drivorn", "viva": "Drivorn",
+  "morto": "Dravth", "morta": "Dravth",
+  "libero": "Grushkrivul", "libera": "Grushkrivul",
+  "pronto": "Thrukvalvok", "pronta": "Thrukvalvok",
+  "solo": "Thurakul", "sola": "Thurakul",
+  "perso": "Thurakgrush", "perduto": "Thurakgrushul",
+  "ferito": "Krivnalvok", "ferita": "Krivnalvok",
+  "maledetto": "Skruvak", "maledetta": "Skruvakshal",
   "amico": "Brulvakvor",
   ,
   "padrone": "Skurvakval",
@@ -1815,32 +1841,44 @@ function fuzzyLookup(normWord) {
 function detectItalianMorphology(word) {
   const w = normalize(word);
 
-  // Explicit markers in original text (e.g., "guerrieri maschi", handled at sentence level)
-  // Here we handle single-word morphology via endings
-
-  // Masculine plural: words ending in -i (soldati, servi, ladri, guerrieri)
+  // Masculine plural: words ending in -i
   if (w.endsWith('i') && w.length > 3) {
-    // Try stripping -i → -o (soldato→soldati), -e→-i (mercante→mercanti)
     const cands = [
-      w.slice(0, -1) + 'o',  // soldati → soldato
-      w.slice(0, -1) + 'e',  // mercanti → mercante
-      w.slice(0, -1),         // just strip i
-      w.slice(0, -1) + 'a',  // guerrieri → guerriera (less common)
+      w.slice(0, -1) + 'o',    // soldati → soldato
+      w.slice(0, -1) + 'e',    // mercanti → mercante
+      w.slice(0, -1),           // strip -i
+      w.slice(0, -1) + 'a',    // rare
+      // Irregolari italiani: -ci→-co, -gi→-go, -chi→-co, -ghi→-go
+      ...(w.endsWith('ci')  ? [w.slice(0, -2) + 'co']  : []),
+      ...(w.endsWith('gi')  ? [w.slice(0, -2) + 'go']  : []),
+      ...(w.endsWith('chi') ? [w.slice(0, -3) + 'co']  : []),
+      ...(w.endsWith('ghi') ? [w.slice(0, -3) + 'go']  : []),
+      // -ici→-ico (nemici→nemico, magici→magico)
+      ...(w.endsWith('ici') ? [w.slice(0, -3) + 'ico'] : []),
+      // -agi→-ago, -ogi→-ogo
+      ...(w.endsWith('agi') ? [w.slice(0, -3) + 'ago'] : []),
+      // -ii→-io (sacrifici→sacrificio)
+      ...(w.endsWith('ii')  ? [w.slice(0, -2) + 'io']  : []),
     ];
     for (const c of cands) {
       if (vocab[c]) return { base: c, dem: vocab[c], suffixes: ['-zhar'] };
     }
-    // fuzzy on stripped form
-    const fuzzy = fuzzyLookup(w.slice(0, -1) + 'o') || fuzzyLookup(w.slice(0, -1) + 'e') || fuzzyLookup(w.slice(0,-1));
+    // fuzzy on most likely forms
+    const fuzzy = fuzzyLookup(w.slice(0, -1) + 'o')
+               || fuzzyLookup(w.slice(0, -1) + 'e')
+               || fuzzyLookup(w.endsWith('ci') ? w.slice(0,-2)+'co' : w.slice(0,-1));
     if (fuzzy && fuzzy.distance <= 2) return { base: fuzzy.key, dem: fuzzy.dem, suffixes: ['-zhar'] };
   }
 
-  // Feminine plural: words ending in -e (guardie, strade, ferite)
+  // Feminine plural: words ending in -e
   if (w.endsWith('e') && w.length > 3) {
     const cands = [
-      w.slice(0, -1) + 'a',  // strada → strade
+      w.slice(0, -1) + 'a',   // strade → strada
       w.slice(0, -1) + 'o',
       w.slice(0, -1),
+      // -sce→-scia, -ce→-cia
+      ...(w.endsWith('sce') ? [w.slice(0, -3) + 'scia'] : []),
+      ...(w.endsWith('ce')  ? [w.slice(0, -2) + 'cia']  : []),
     ];
     for (const c of cands) {
       if (vocab[c]) return { base: c, dem: vocab[c], suffixes: ['-shal-zhar'] };
@@ -1850,7 +1888,7 @@ function detectItalianMorphology(word) {
   // Feminine singular: words ending in -a
   if (w.endsWith('a') && w.length > 3) {
     const cands = [
-      w.slice(0, -1) + 'o',  // schiava → schiavo
+      w.slice(0, -1) + 'o',   // schiava → schiavo
       w,
     ];
     for (const c of cands) {
