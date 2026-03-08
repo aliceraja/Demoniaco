@@ -485,6 +485,7 @@
   .fuzzy { color: var(--gold); font-style: italic; border-bottom: 1px dotted var(--gold); cursor: help; opacity: 0.9; }
   .morph { color: #a0c4a0; font-style: italic; cursor: help; opacity: 0.9; }
   .negated { color: #a78bfa; font-style: italic; cursor: help; }
+  .tense { color: #7ec8c8; font-style: italic; cursor: help; }
   .legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 8px 24px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.1); font-size: 11px; color: var(--text-dim); letter-spacing: 0.03em; }
   .legend span { display: flex; align-items: center; gap: 5px; }
   .ldot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
@@ -536,8 +537,8 @@
       <span><span class="ldot" style="background:var(--text)"></span> Traduzione esatta</span>
       <span><span class="ldot" style="background:var(--gold)"></span> Corrispondenza approssimata</span>
       <span><span class="ldot" style="background:#a0c4a0"></span> Forma morfologica</span>
-      <span><span class="ldot" style="background:#a78bfa"></span> Forma negativa (-nux)</span>
-      <span><span class="ldot" style="background:var(--text-dim)"></span> Termine non trovato</span>
+      <span><span class="ldot" style="background:#a78bfa"></span> Negazione (-nux)</span>
+      <span><span class="ldot" style="background:#7ec8c8"></span> Passato (-vrath) / Futuro (-thruk)</span>
     </div>
   </div>
 
@@ -568,7 +569,16 @@
         </ul>
       </div>
       <div class="grammar-card">
-        <h3>Negazione</h3>
+        <h3>Tempi verbali</h3>
+        <ul>
+          <li>Presente → nessun suffisso</li>
+          <li>Passato → suffisso <code>-vrath</code></li>
+          <li>Futuro → suffisso <code>-thruk</code></li>
+        </ul>
+        <p style="margin-top:8px">Es: <code>uccidere</code> → <code>Drakth</code></p>
+        <p><code>uccise</code> → <code>Drakth-vrath</code></p>
+        <p><code>ucciderà</code> → <code>Drakth-thruk</code></p>
+      </div>
         <ul>
           <li>"non" / "no" → suffisso <code>-nux</code> sulla parola seguente</li>
           <li>Es: <code>non morire</code> → <code>Dravth-nux</code></li>
@@ -807,9 +817,146 @@ const vocab = {
   "volare": "Zhurk",
   "tradire": "Drakth",
   "essere": "Driv",
+  "avere": "Vrekul",
   "morto": "Dravth", "morta": "Dravth", "morti": "Dravth", "morte": "Dravth",
-  "vivo": "Driv", "viva": "Driv",
+  "vivo": "Drivak", "viva": "Drivak",
   "sanguina": "Drivak", "sangue": "Drivak",
+
+  // Fix doppioni — parole con significato diverso che avevano la stessa traduzione
+  "guerra": "Draktharval",
+  "combattere": "Krashvok",   // separato da guerra
+  "guerriero": "Draktharvul", // separato da guerra
+  "borsa": "Brukal",
+  "castello": "Brukalthar",   // separato da borsa
+  "contusione": "Brukthariv", // separato da città/giusto
+  "città": "Brukval",
+  "giusto": "Brukval", "giusta": "Brukval",
+  "cicatrice": "Drakvulthar", // separato da valoroso/guardia
+  "valoroso": "Drakvul", "valorosa": "Drakvul",
+  "guardia": "Drakvulth", "guardie": "Drakvulth",
+  "veloce": "Drakvist",       // separato da valoroso
+  "uccidere": "Drakth",
+  "tradire": "Drakthul",      // separato da uccidere
+  "patto": "Xivthakdrak",     // separato da geloso
+  "geloso": "Drakthulxiv",
+  "odio": "Drakthulvrek",     // separato da sleale
+  "sleale": "Drakthulskor",
+  "rabbia": "Drakuvthor",     // separato da irato
+  "irato": "Drakuvthiv",
+  "solitudine": "Thurakbrulv", // separato da solo
+  "solo": "Thurakul",
+  "disperazione": "Thurakvrekt",
+  "disperato": "Thurakvist",  // separato da disperazione
+  "profondo": "Thurakval",
+  "perdere": "Thurakgrush",   // separato da profondo
+  "accampamento": "Drivul",
+  "avanzare": "Thruk",
+  "camminare": "Thrukv",      // rimane uguale ad accerchiare — li differenziamo
+  "accerchiare": "Thrukvar",  // separato da camminare
+  "testa": "Thrukval",
+  "strada": "Thrukvalv",      // separato da testa
+  "portare": "Thrukvalm",     // separato da strada
+  "alto": "Thrukxiv",
+  "salire": "Thrukxivval",    // separato da alto
+  "occhio": "Thivrak", "occhi": "Thivrak",
+  "maestro": "Thivrakul", "maestra": "Thivrakul", // separato da occhio/sussurrare
+  "sussurrare": "Thivraksh",  // separato da maestro
+  "ascoltare": "Thivrul",
+  "orecchio": "Thivrulan", "orecchie": "Thivrulan", // separato da ascoltare
+  "casa": "Thralv",
+  "tavolo": "Thralvak",       // separato da casa
+  "paura": "Thrazk",
+  "acido": "Thrazkan",        // separato da paura
+  "notte": "Thrazthal",
+  "nel buio": "Thrazthaliv",  // separato da notte
+  "fungo": "Thrazthalan",     // separato da notte
+  "oscuro": "Thrazul", "oscura": "Thrazul",
+  "terrificante": "Thrazvak",
+  "trauma": "Thrazvakthar",   // separato da terrificante/disordine
+  "disordine": "Thrazvular",  // separato da terrificante
+  "bocca": "Thrivak",
+  "parlare": "Thrivakul",     // separato da bocca
+  "scendere": "Throkval",
+  "basso": "Throkvalv",       // separato da scendere
+  "sotto": "Throkvalu",       // separato da scendere
+  "addestrare": "Throvak",
+  "autorità": "Throvakul",    // separato da addestrare
+  "gambe": "Thrukthral", "gamba": "Thrukthral",
+  "gola": "Zhurgrush",
+  "soffocare": "Zhurgrushvak", // separato da gola
+  "respirare": "Zhurthiv",
+  "naso": "Zhurthivak",       // separato da respirare
+  "polmoni": "Zhurvakthal",
+  "ciclo": "Zhurvakthor",     // separato da polmoni
+  "sabbia": "Zhulv",
+  "piatto": "Zhulvak",        // separato da sabbia
+  "mente": "Zivralthrak",
+  "intelligente": "Zivralthrist", // separato da mente
+  "saggio": "Zivral", "saggia": "Zivral",
+  "cuore": "Brulvakthiv",
+  "clan": "Brulvakthrak",     // separato da cuore
+  "insieme": "Brulvakthruk",
+  "radunare": "Brulvakthrukv", // separato da insieme
+  "segreto": "Thravik",
+  "povero": "Thravikul", "povera": "Thravikul", // separato da segreto
+  "maledetto": "Skruvak", "maledetta": "Skruvak",
+  "rubare": "Skruvakth",      // separato da maledetto/nascondere
+  "nascondere": "Skurvak",
+  "capo": "Skurvakthar",      // separato da nascondere
+  "orgoglio": "Skurvalthiv",
+  "con onore": "Skurvalthrak", // separato da orgoglio
+  "onorevole": "Skurval",
+  "nobile": "Skurvalvok",     // separato da onorevole
+  "inganno": "Skruvthak",
+  "ladro": "Skruvthakul", "ladra": "Skruvthakul", // separato da inganno
+  "dominare": "Skurvakthorn",  // separato da arrogante
+  "arrogante": "Skurvakthar",
+  "nutrire": "Brivakthal",
+  "frutto": "Brivakthor",     // separato da nutrire
+  "pietra sacra": "Bruktharxiv",
+  "isola": "Bruktharxivak",   // separato da pietra sacra
+  "solido": "Bruktharval",
+  "petto": "Bruktharvalv",    // separato da solido
+  "mura": "Bruktharvalm",     // separato da solido
+  "largo": "Brukthral",
+  "secco": "Brukthralan",     // separato da largo
+  "lento": "Drakvalthrak",    // separato da stringere/tardi
+  "tardi": "Drakvalthiv",
+  "stringere": "Drakvalthrul",
+  "passato": "Grivnulthrok",
+  "prima": "Grivnulthrokv",   // separato da passato
+  "futuro": "Grivnulthruk",
+  "dopo": "Grivnulthrukv",    // separato da futuro
+  "eterno": "Grivnulxiv",
+  "mese": "Grivnulxivak",     // separato da eterno
+  "nostalgia": "Grivnulthivrak",
+  "già": "Grivnulthivrul",    // separato da nostalgia
+  "maledizione del tempo": "Skruvakgrivnul",
+  "maledizione antica": "Skruvakgrivnulth", // separato
+  "luce dell'alba": "Xivthrok",
+  "pomeriggio": "Xivthrokav", // separato da alba
+  "benedire": "Xivthal",
+  "giorno": "Xivthalv",       // separato da benedire
+  "alla luce": "Xivthalu",    // separato da benedire
+  "rivelare": "Xivthrul",
+  "illuminare": "Xivthrulv",  // separato da rivelare
+  "visibile": "Xivthrulak",   // separato da rivelare
+  "verità": "Xivthak",
+  "ricco": "Xivthakvok", "ricca": "Xivthakvok", // separato da verità
+  "magia": "Xivthrukar",
+  "profezia": "Xivthrukarv",  // separato da magia
+  "sacro": "Xivthrakul",      // separato da magia/pregare
+  "trovare": "Xivrul",
+  "ritrovato": "Xivrulan",    // separato da trovare
+  "senza pietà": "Vrekalgrush",
+  "spietato": "Vrekalgrushv", // separato
+  "utopia": "Vrukal",
+  "bere": "Vrukalak",         // separato da utopia
+  "bruciatura": "Vrukthak",
+  "potere": "Vrukthakul",     // separato da bruciatura
+  "volontà": "Vrukthakthiv",
+  "desiderio": "Vrukthakthor", // separato da volontà
+
 
   // Stealth
   "imboscata": "Grivthak",
@@ -1532,95 +1679,148 @@ function translateItaDem(text) {
     'col','coi','e','o','ma','che','se','anche','però','quindi','allora'
   ]);
 
-  // Coniugazioni italiane → radice del verbo nel vocabolario
-  const verbMap = {
-    // essere → vivere (il più vicino concettualmente) oppure lasciamo come "essere"
-    'sono':'vivere','sei':'vivere','è':'vivere','siamo':'vivere','siete':'vivere',
-    'era':'vivere','eri':'vivere','eravamo':'vivere','eravate':'vivere','erano':'vivere',
-    'sarò':'vivere','sarai':'vivere','sarà':'vivere','saremo':'vivere','sarete':'vivere','saranno':'vivere',
-    'stato':'vivere','stata':'vivere','stati':'vivere','state':'vivere',
-    // avere → non presente, skippiamo o mappiamo
-    'ho':'aiutare','hai':'aiutare','ha':'aiutare','abbiamo':'aiutare','avete':'aiutare','hanno':'aiutare',
-    'aveva':'aiutare','avevo':'aiutare','avevamo':'aiutare','avevano':'aiutare',
-    // coniugazioni comuni di verbi già presenti
-    'uccido':'uccidere','uccidi':'uccidere','uccide':'uccidere','uccidiamo':'uccidere','uccidono':'uccidere',
-    'ucciso':'uccidere','uccisa':'uccidere',
-    'corro':'correre','corri':'correre','corre':'correre','corriamo':'correre','corrono':'correre',
-    'volo':'volare','voli':'volare','vola':'volare','voliamo':'volare','volano':'volare',
-    'vivo':'vivere','vivi':'vivere','vive':'vivere','viviamo':'vivere','vivono':'vivere',
-    'muoio':'muovere','muori':'muovere','muore':'muovere',
-    'cado':'cadere','cadi':'cadere','cade':'cadere','cadiamo':'cadere','cadono':'cadere',
-    'caduto':'cadere','caduta':'cadere',
-    'aiuto':'aiutare','aiuti':'aiutare','aiuta':'aiutare','aiutiamo':'aiutare','aiutano':'aiutare',
-    'amo':'amare','ami':'amare','ama':'amare','amiamo':'amare','amano':'amare',
-    'amato':'amare','amata':'amare',
-    'tradisce':'tradire','tradisco':'tradire','tradisci':'tradire','tradiscono':'tradire','tradito':'tradire',
-    'crea':'creare','creo':'creare','crei':'creare','creiamo':'creare','creano':'creare','creato':'creare',
-    'dorme':'dormire','dormo':'dormire','dormi':'dormire','dormiamo':'dormire','dormono':'dormire',
-    'cura':'curare','curo':'curare','curi':'curare','curiamo':'curare','curano':'curare',
-    'difende':'difendere','difendo':'difendere','difendi':'difendere','difendiamo':'difendere','difendono':'difendere',
-    'muore':'morte','morto':'morte','morta':'morte','morti':'morte','morte':'morte',
-    'invoca':'invocare','invoco':'invocare','invochi':'invocare','invochiamo':'invocare','invocano':'invocare',
-    'sacrifica':'sacrificare','sacrifico':'sacrificare','sacrifichi':'sacrificare','sacrificano':'sacrificare',
-    'sopravvive':'sopravvivere','sopravvivo':'sopravvivere','sopravvivi':'sopravvivere',
-    'trasforma':'trasformare','trasformo':'trasformare','trasformi':'trasformare','trasformano':'trasformare',
-    'avanza':'avanzare','avanzo':'avanzare','avanzano':'avanzare',
-    'cammina':'camminare','cammino':'camminare','cammini':'camminare','camminano':'camminare',
-    'nuota':'nuotare','nuoto':'nuotare','nuoti':'nuotare','nuotano':'nuotare',
-    'osserva':'osservare','osservo':'osservare','osservi':'osservare','osservano':'osservare',
-    'nasconde':'nascondere','nascondo':'nascondere','nascondi':'nascondere','nascondono':'nascondere',
-    'fugge':'fuggire','fuggo':'fuggire','fuggi':'fuggire','fuggono':'fuggire',
-    'parla':'parlare','parlo':'parlare','parli':'parlare','parliamo':'parlare','parlano':'parlare','parlato':'parlare',
-    'grida':'gridare','grido':'gridare','gridi':'gridare','gridiamo':'gridare','gridano':'gridare','gridato':'gridare',
-    'urla':'urlare','urlo':'urlare','urli':'urlare','urliamo':'urlare','urlano':'urlare',
-    'tace':'tacere','taccio':'tacere','taci':'tacere','tacciamo':'tacere','tacciono':'tacere',
-    'ascolta':'ascoltare','ascolto':'ascoltare','ascolti':'ascoltare','ascoltano':'ascoltare',
-    'attacca':'attaccare','attacco':'attaccare','attacchi':'attaccare','attaccano':'attaccare','attaccato':'attaccare',
-    'colpisce':'colpire','colpisco':'colpire','colpisci':'colpire','colpiscono':'colpire','colpito':'colpire',
-    'ferisce':'ferire','ferisco':'ferire','ferisci':'ferire','feriscono':'ferire','ferito':'ferire',
-    'distrugge':'distruggere','distruggo':'distruggere','distruggi':'distruggere','distruggono':'distruggere',
-    'brucia':'bruciare','brucio':'bruciare','bruci':'bruciare','bruciamo':'bruciare','bruciano':'bruciare',
-    'gela':'congelare','gelo':'congelare','geli':'congelare','geliamo':'congelare','gelano':'congelare',
-    'avvelena':'avvelenare','avveleno':'avvelenare','avveleni':'avvelenare','avvelenano':'avvelenare',
-    'maledice':'maledire','maledico':'maledire','maledici':'maledire','maledicono':'maledire','maledetto':'maledire',
-    'benedice':'benedire','benedico':'benedire','benedici':'benedire','benedicono':'benedire',
-    'evoca':'evocare','evoco':'evocare','evochi':'evocare','evocano':'evocare','evocato':'evocare',
-    'sigilla':'sigillare','sigillo':'sigillare','sigilli':'sigillare','sigillano':'sigillare',
-    'apre':'aprire','apro':'aprire','apri':'aprire','apriamo':'aprire','aprono':'aprire','aperto':'aprire',
-    'chiude':'chiudere','chiudo':'chiudere','chiudi':'chiudere','chiudono':'chiudere','chiuso':'chiudere',
-    'costruisce':'costruire','costruisco':'costruire','costruisci':'costruire','costruiscono':'costruire',
-    'ruba':'rubare','rubo':'rubare','rubi':'rubare','rubiamo':'rubare','rubano':'rubare','rubato':'rubare',
-    'insegue':'inseguire','inseguo':'inseguire','inseguono':'inseguire',
-    'trova':'trovare','trovo':'trovare','trovi':'trovare','trovano':'trovare','trovato':'trovare',
-    'cerca':'cercare','cerco':'cercare','cerchi':'cercare','cercano':'cercare','cercato':'cercare',
-    'porta':'portare','porto':'portare','porti':'portare','portano':'portare','portato':'portare',
-    'lascia':'lasciare','lascio':'lasciare','lasci':'lasciare','lasciano':'lasciare','lasciato':'lasciare',
-    'prende':'prendere','prendo':'prendere','prendi':'prendere','prendono':'prendere','preso':'prendere',
-    'vende':'vendere','vendo':'vendere','vendi':'vendere','vendono':'vendere','venduto':'vendere',
-    'combatte':'combattere','combatto':'combattere','combatti':'combattere','combattono':'combattere',
-    'vince':'vincere','vinco':'vincere','vinci':'vincere','vincono':'vincere','vinto':'vincere',
-    'domina':'dominare','domino':'dominare','domini':'dominare','dominano':'dominare','dominato':'dominare',
-    'giura':'giurare','giuro':'giurare','giuri':'giurare','giurano':'giurare','giurato':'giurare',
-    'nasce':'nascere','nasco':'nascere','nasci':'nascere','nascono':'nascere','nato':'nascere',
-    'risorge':'risorgere','risorgo':'risorgere','risorgono':'risorgere','risorto':'risorgere',
-    'protegge':'proteggere','proteggo':'proteggere','proteggi':'proteggere','proteggono':'proteggere',
-    'prega':'pregare','prego':'pregare','preghi':'pregare','pregano':'pregare','pregato':'pregare',
-    'respira':'respirare','respiro':'respirare','respiri':'respirare','respirano':'respirare',
-    'illumina':'illuminare','illumino':'illuminare','illumini':'illuminare','illuminano':'illuminare',
-    'oscura':'oscurare','oscuro':'oscurare','oscuri':'oscurare','oscurano':'oscurare',
-    'ricorda':'ricordare','ricordo':'ricordare','ricordi':'ricordare','ricordano':'ricordare',
-    'dimentica':'dimenticare','dimentico':'dimenticare','dimentichi':'dimenticare','dimenticano':'dimenticare',
-    'condanna':'condannare','condanno':'condannare','condanni':'condannare','condannano':'condannare',
-    'libera':'liberare','libero':'liberare','liberi':'liberare','liberano':'liberare','liberato':'liberare',
-    'imprigiona':'imprigionare','imprigiono':'imprigionare','imprigionano':'imprigionare',
-    'tortura':'torturare','torturo':'torturare','torturi':'torturare','torturano':'torturare',
-    'spia':'spiare','spio':'spiare','spiano':'spiare','spiato':'spiare',
-    'onora':'onorare','onoro':'onorare','onori':'onorare','onorano':'onorare','onorato':'onorare',
-    'umilia':'umiliare','umilio':'umiliare','umili':'umiliare','umiliano':'umiliare','umiliato':'umiliare',
-    'cade':'cadere','cadde':'cadere',
-    'vince':'vincere','ha vinto':'vincere',
-    'muore':'morire','muoio':'morire','muori':'morire','moriamo':'morire','morite':'morire','muoiono':'morire',
-  };
+  // Coniugazioni → { root, tense }
+  // tense: 'present' | 'past' | 'future'
+  const verbMap = {};
+  function addV(forms, root, tense='present') { forms.forEach(f => verbMap[f] = {root, tense}); }
+
+  // ESSERE
+  addV(['sono','sei','è','e','siamo','siete'], 'essere', 'present');
+  addV(['era','eri','eravamo','eravate','erano','fu','fui','furono','stato','stata','stati','state'], 'essere', 'past');
+  addV(['sarò','sarai','sarà','saremo','sarete','saranno'], 'essere', 'future');
+  // AVERE
+  addV(['ho','hai','ha','abbiamo','avete','hanno'], 'avere', 'present');
+  addV(['aveva','avevo','avevamo','avevano','ebbe','ebbi','avuto'], 'avere', 'past');
+  addV(['avrò','avrai','avrà','avremo','avrete','avranno'], 'avere', 'future');
+  // UCCIDERE
+  addV(['uccido','uccidi','uccide','uccidiamo','uccidono'], 'uccidere', 'present');
+  addV(['uccise','uccisi','uccidemmo','uccisero','ucciso','uccisa'], 'uccidere', 'past');
+  addV(['ucciderò','ucciderai','ucciderà','uccideranno'], 'uccidere', 'future');
+  // CORRERE
+  addV(['corro','corri','corre','corriamo','corrono'], 'correre', 'present');
+  addV(['corse','corsi','corso','corsa'], 'correre', 'past');
+  addV(['correrò','correrai','correrà','correranno'], 'correre', 'future');
+  // VOLARE
+  addV(['volo','voli','vola','voliamo','volano'], 'volare', 'present');
+  addV(['volò','volai','volato','volata'], 'volare', 'past');
+  addV(['volerò','volerai','volerà','voleranno'], 'volare', 'future');
+  // VIVERE
+  addV(['vivo','vivi','vive','viviamo','vivono'], 'vivere', 'present');
+  addV(['visse','vissi','vissuto','vissuta'], 'vivere', 'past');
+  addV(['vivrò','vivrai','vivrà','vivranno'], 'vivere', 'future');
+  // MORIRE
+  addV(['muoio','muori','muore','moriamo','morite','muoiono'], 'morire', 'present');
+  addV(['morì','morii','morirono','morto','morta','morti'], 'morire', 'past');
+  addV(['morirò','morirai','morirà','moriranno'], 'morire', 'future');
+  // CADERE
+  addV(['cado','cadi','cade','cadiamo','cadono'], 'cadere', 'present');
+  addV(['cadde','caddi','caddero','caduto','caduta'], 'cadere', 'past');
+  addV(['cadrò','cadrai','cadrà','cadranno'], 'cadere', 'future');
+  // AMARE
+  addV(['amo','ami','ama','amiamo','amano'], 'amare', 'present');
+  addV(['amò','amai','amarono','amato','amata'], 'amare', 'past');
+  addV(['amerò','amerai','amerà','ameranno'], 'amare', 'future');
+  // TRADIRE
+  addV(['tradisce','tradisco','tradisci','tradiscono'], 'tradire', 'present');
+  addV(['tradì','tradii','tradirono','tradito','tradita'], 'tradire', 'past');
+  addV(['tradirò','tradirai','tradirà','tradiranno'], 'tradire', 'future');
+  // CREARE
+  addV(['crea','creo','crei','creiamo','creano'], 'creare', 'present');
+  addV(['creò','creai','crearono','creato','creata'], 'creare', 'past');
+  addV(['creerò','creerai','creerà','creeranno'], 'creare', 'future');
+  // DORMIRE
+  addV(['dorme','dormo','dormi','dormiamo','dormono'], 'dormire', 'present');
+  addV(['dormì','dormii','dormirono','dormito'], 'dormire', 'past');
+  addV(['dormirò','dormirai','dormirà','dormiranno'], 'dormire', 'future');
+  // PARLARE
+  addV(['parla','parlo','parli','parliamo','parlano'], 'parlare', 'present');
+  addV(['parlò','parlai','parlarono','parlato'], 'parlare', 'past');
+  addV(['parlerò','parlerai','parlerà','parleranno'], 'parlare', 'future');
+  // GRIDARE
+  addV(['grida','grido','gridi','gridiamo','gridano'], 'gridare', 'present');
+  addV(['gridò','gridai','gridarono','gridato'], 'gridare', 'past');
+  // ATTACCARE
+  addV(['attacca','attacco','attacchi','attaccano'], 'attaccare', 'present');
+  addV(['attaccò','attaccai','attaccarono','attaccato'], 'attaccare', 'past');
+  addV(['attaccherò','attaccherai','attaccherà'], 'attaccare', 'future');
+  // COMBATTERE
+  addV(['combatte','combatto','combatti','combattono'], 'combattere', 'present');
+  addV(['combatté','combattei','combatterono','combattuto'], 'combattere', 'past');
+  addV(['combatterò','combatterai','combatterà'], 'combattere', 'future');
+  // VINCERE
+  addV(['vince','vinco','vinci','vincono'], 'vincere', 'present');
+  addV(['vinse','vinsi','vinsero','vinto'], 'vincere', 'past');
+  addV(['vincerò','vincerai','vincerà'], 'vincere', 'future');
+  // FUGGIRE
+  addV(['fugge','fuggo','fuggi','fuggono'], 'fuggire', 'present');
+  addV(['fuggì','fuggii','fuggirono','fuggito'], 'fuggire', 'past');
+  // INVOCARE
+  addV(['invoca','invoco','invochi','invocano'], 'invocare', 'present');
+  addV(['invocò','invocai','invocarono','invocato'], 'invocare', 'past');
+  // BRUCIARE
+  addV(['brucia','brucio','bruci','bruciano'], 'bruciare', 'present');
+  addV(['bruciò','bruciai','bruciarono','bruciato'], 'bruciare', 'past');
+  // SACRIFICARE
+  addV(['sacrifica','sacrifico','sacrifichi','sacrificano'], 'sacrificare', 'present');
+  addV(['sacrificò','sacrificai','sacrificarono','sacrificato'], 'sacrificare', 'past');
+  // SOPRAVVIVERE
+  addV(['sopravvive','sopravvivo','sopravvivi'], 'sopravvivere', 'present');
+  addV(['sopravvisse','sopravvissi','sopravvissuto'], 'sopravvivere', 'past');
+  // TROVARE
+  addV(['trova','trovo','trovi','trovano'], 'trovare', 'present');
+  addV(['trovò','trovai','trovarono','trovato'], 'trovare', 'past');
+  addV(['troverò','troverai','troverà'], 'trovare', 'future');
+  // PROTEGGERE
+  addV(['protegge','proteggo','proteggi','proteggono'], 'proteggere', 'present');
+  addV(['protesse','protessi','protetto'], 'proteggere', 'past');
+  // GIURARE
+  addV(['giura','giuro','giuri','giurano'], 'giurare', 'present');
+  addV(['giurò','giurai','giurarono','giurato'], 'giurare', 'past');
+  // CERCARE
+  addV(['cerca','cerco','cerchi','cercano'], 'cercare', 'present');
+  addV(['cercò','cercai','cercarono','cercato'], 'cercare', 'past');
+  // NASCERE
+  addV(['nasce','nasco','nasci','nascono'], 'nascere', 'present');
+  addV(['nacque','nacqui','nacquero','nato','nata'], 'nascere', 'past');
+  // PREGARE
+  addV(['prega','prego','preghi','pregano'], 'pregare', 'present');
+  addV(['pregò','pregai','pregarono','pregato'], 'pregare', 'past');
+  // CONDANNARE
+  addV(['condanna','condanno','condanni','condannano'], 'condannare', 'present');
+  addV(['condannò','condannai','condannarono','condannato'], 'condannare', 'past');
+  // TACERE
+  addV(['tace','taccio','taci','tacciono'], 'tacere', 'present');
+  addV(['tacque','tacqui','tacquero','taciuto'], 'tacere', 'past');
+  // CURARE
+  addV(['cura','curo','curi','curano'], 'curare', 'present');
+  addV(['curò','curai','curarono','curato'], 'curare', 'past');
+  // DIFENDERE
+  addV(['difende','difendo','difendi','difendono'], 'difendere', 'present');
+  addV(['difese','difesi','difesero','difeso'], 'difendere', 'past');
+  // NUOTARE
+  addV(['nuota','nuoto','nuoti','nuotano'], 'nuotare', 'present');
+  addV(['nuotò','nuotai','nuotarono','nuotato'], 'nuotare', 'past');
+  // OSSERVARE
+  addV(['osserva','osservo','osservi','osservano'], 'osservare', 'present');
+  addV(['osservò','osservai','osservarono','osservato'], 'osservare', 'past');
+  // AVANZARE
+  addV(['avanza','avanzo','avanzi','avanzano'], 'avanzare', 'present');
+  addV(['avanzò','avanzai','avanzarono','avanzato'], 'avanzare', 'past');
+  // CAMMINARE
+  addV(['cammina','cammino','cammini','camminano'], 'camminare', 'present');
+  addV(['camminò','camminai','camminarono','camminato'], 'camminare', 'past');
+  // RISORGERE
+  addV(['risorge','risorgo','risorgono'], 'risorgere', 'present');
+  addV(['risorse','risorsi','risorto'], 'risorgere', 'past');
+  // BERE
+  addV(['beve','bevo','bevi','beviamo','bevono'], 'bere', 'present');
+  addV(['bevve','bevvi','bevvero','bevuto'], 'bere', 'past');
+  // MARCIARE
+  addV(['marcia','marcio','marciano'], 'marciare', 'present');
+  addV(['marciò','marciai','marciarono','marciato'], 'marciare', 'past');
+
+  // Suffissi temporali demoniaci
+  const tenseSuffix = { 'past': '-vrath', 'future': '-thruk', 'present': '' };
 
   let i = 0;
   while (i < wordTokens.length) {
@@ -1654,7 +1854,12 @@ function translateItaDem(text) {
         const nextToken = wordTokens[j];
         const nextNorm = normalize(nextToken);
         // Prova a tradurre la parola successiva
-        let dem = vocab[nextNorm] || (verbMap[nextNorm] && vocab[verbMap[nextNorm]]);
+        let dem = vocab[nextNorm];
+        if (!dem && verbMap[nextNorm]) {
+          const { root, tense } = verbMap[nextNorm];
+          const base = vocab[root] || vocab[normalize(root)];
+          if (base) dem = base + (tenseSuffix[tense] || '');
+        }
         if (!dem) {
           const morph = detectItalianMorphology(nextToken);
           if (morph) dem = morph.dem + morph.suffixes.join('');
@@ -1679,10 +1884,11 @@ function translateItaDem(text) {
 
     // --- VERB CONJUGATION MAP ---
     if (verbMap[norm]) {
-      const root = verbMap[norm];
+      const { root, tense } = verbMap[norm];
       const dem = vocab[root] || vocab[normalize(root)];
       if (dem) {
-        parts.push({ type: 'word', dem, ita: token, exact: true });
+        const suffix = tenseSuffix[tense] || '';
+        parts.push({ type: 'word', dem: dem + suffix, ita: token, exact: true, tense });
         i++; continue;
       }
     }
@@ -1758,6 +1964,8 @@ function translateItaDem(text) {
       if (!first) html += `<span class="separator">'</span>`;
       if (p.negated) {
         html += `<span class="negated" title="${p.ita}">${p.dem}</span>`;
+      } else if (p.tense && p.tense !== 'present') {
+        html += `<span class="tense" title="${p.ita} (${p.tense === 'past' ? 'passato' : 'futuro'})">${p.dem}</span>`;
       } else if (p.exact) {
         html += `<span title="${p.ita}">${p.dem}</span>`;
       } else if (p.distance !== undefined) {
