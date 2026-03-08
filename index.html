@@ -638,11 +638,13 @@ const vocab = {
   "me": "Vok", "mi": "Vok", "ti": "Zik", "te": "Zik",
   "lo": "Thul", "la": "Thul", "li": "Drak", "le": "Drak",
   "ci": "Ruk", "vi": "Skul",
-  "mio": "Vok", "mia": "Vok", "miei": "Vok", "mie": "Vok",
-  "tuo": "Zik", "tua": "Zik", "tuoi": "Zik", "tue": "Zik",
-  "suo": "Thul", "sua": "Thul", "suoi": "Thul", "sue": "Thul",
-  "nostro": "Ruk", "nostra": "Ruk", "nostri": "Ruk", "nostre": "Ruk",
-  "vostro": "Skul", "vostra": "Skul", "vostri": "Skul", "vostre": "Skul",
+  "mio": "Vak", "mia": "Vak", "miei": "Vak", "mie": "Vak",
+  "tuo": "Zak", "tua": "Zak", "tuoi": "Zak", "tue": "Zak",
+  "suo": "Thak", "sua": "Thak", "suoi": "Thak", "sue": "Thak",
+  "nostro": "Rak", "nostra": "Rak", "nostri": "Rak", "nostre": "Rak",
+  "vostro": "Sak", "vostra": "Sak", "vostri": "Sak", "vostre": "Sak",
+  "loro": "Dak",
+  "loro (possessivo)": "Dak",
   "lui maschile": "Thul-morg", "lei femminile": "Thul-shal",
   "maschio": "Morg", "femmina": "Shal", "molti": "Zhar",
 
@@ -2270,14 +2272,6 @@ function translateDemIta(text) {
   const cleaned = text.replace(/:nar:|:nn:|:n:/g, ' ').trim();
   const words = cleaned.split("'").map(w => w.trim()).filter(Boolean);
 
-  // Mappa pronomi → forma possessiva per contesto
-  const possessiveMap = {
-    'vok': 'mio', 'zik': 'tuo', 'thul': 'suo',
-    'ruk': 'nostro', 'skul': 'vostro', 'drak': 'loro'
-  };
-  // Pronomi "puri" (senza suffissi) che in contesto post-sostantivo = possessivo
-  const pronounKeys = new Set(Object.keys(possessiveMap));
-
   const sufMap = [
     ['-morg-zhar', { label: 'maschile plurale', type: 'gender' }],
     ['-shal-zhar', { label: 'femminile plurale', type: 'gender' }],
@@ -2330,14 +2324,7 @@ function translateDemIta(text) {
 
     if (!word) return `<span style="color:var(--text-dim)">[${w}]</span>`;
 
-    // Contesto possessivo: se è un pronome puro (nessun suffisso) e segue un sostantivo → possessivo
-    const isPronounOnly = pronounKeys.has(base) && suffixes.length === 0;
-    const prevWord = htmlParts[htmlParts.length - 1];
-    const prevIsNoun = prevWord && !prevWord.includes('-futuro') && !prevWord.includes('-passato')
-                    && !prevWord.includes('Zovak') && !prevWord.includes('non ');
-    const displayWord = (isPronounOnly && prevIsNoun && possessiveMap[base])
-      ? possessiveMap[base]
-      : word;
+    const displayWord = word;
 
     // Separa i tipi di suffisso
     const negation = suffixes.find(s => s.type === 'neg');
