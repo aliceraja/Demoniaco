@@ -827,7 +827,72 @@ const vocab = {
   "vivo": "Drivak", "viva": "Drivak",
   "sanguina": "Drivak", "sangue": "Drivak",
 
-  // Razze e condizioni — Cronache di Raja Dunia
+  // Assolutori
+  "assolutori": "Xivtharkulvorn",
+  "assolutore": "Xivtharkulvorn",
+  "assolutori dell'abisso": "Xivtharkulvorn-thurak",
+  "assolutore dell'abisso": "Xivtharkulvorn-thurak",
+
+  // Verbi comuni mancanti
+  "fare": "Vrathok",
+  "potere": "Skurvath",
+  "volere": "Vrukthakul",
+  "sapere": "Zivralok",
+  "andare": "Thrukval",
+  "venire": "Grivnalok",
+  "dare": "Vrekular",
+  "stare": "Skulvthal",
+  "dire": "Thrivakul",
+  "vedere": "Thivrakul",
+  "sentire": "Zhurthivok",
+  "pensare": "Zivralthok",
+  "credere": "Xivthakul",
+  "capire": "Zivralvok",
+  "portare": "Thrukvalm",
+  "prendere": "Vurzthal",
+  "mettere": "Thralvok",
+  "tenere": "Krashvok",
+  "lasciare": "Grushval",
+  "tornare": "Grivnalthrok",
+  "restare": "Skulvthalok",
+  "aprire": "Grivnalvrak",
+  "chiudere": "Skulvnux",
+  "seguire": "Thrukvalok",
+  "perdere": "Thurakgrush",
+  "vincere": "Skorvath",
+  "conoscere": "Zivralbruk",
+  "ricordare": "Grivnulthivrak",
+  "dimenticare": "Thurakthivrak",
+  "aspettare": "Skulvthrakul",
+  "chiamare": "Thrukarok",
+  "rispondere": "Thrivakular",
+  "chiedere": "Thrivakziv",
+  "scrivere": "Bruthakul",
+  "leggere": "Bruthakthiv",
+  "costruire": "Bruthvalok",
+  "distruggere": "Drathvakok",
+  "aiutare": "Skruvthal",
+  "uccidere": "Drakth",
+  "colpire": "Kravthruk",
+  "ferire": "Krivnalok",
+  "guarire": "Thivakul",
+  "dormire": "Skruvthok",
+  "mangiare": "Brivakthal",
+  "correre": "Drakvok",
+  "salire": "Thrukxivval",
+  "scendere": "Throkvalok",
+  "nascere": "Bruthvok",
+  "crescere": "Bruthvalul",
+  "cambiare": "Skulvrakul",
+  "scegliere": "Zivralvrak",
+  "combattere": "Krashvok",
+  "resistere": "Krashvokul",
+  "cedere": "Grushkrivul",
+  "tradire": "Drakthul",
+  "giurare": "Xivthakdrak",
+  "odiare": "Drakthulvrek",
+  "temere": "Thrazkul",
+  "sperare": "Xivvrekthul",
   "nani": "Brukvorn",
   "nano": "Brukvorn",
   "vhalaas": "Vhalaas",
@@ -1575,10 +1640,49 @@ function levenshtein(a, b) {
   return dp[m][n];
 }
 
+// Mappa semantica: parole senza traduzione diretta → sinonimo più vicino per SENSO
+const semanticFallback = {
+  // verbi
+  'volere':'desiderare','desiderare':'volere','bramare':'volere',
+  'potere':'forza','dovere':'obbligo',
+  'andare':'camminare','venire':'avanzare',
+  'stare':'essere','rimanere':'restare',
+  'vedere':'osservare','guardare':'osservare',
+  'sentire':'ascoltare','udire':'ascoltare',
+  'pensare':'sapere','credere':'sapere','capire':'sapere',
+  'dire':'parlare','raccontare':'parlare','urlare':'gridare',
+  'prendere':'rubare','portare':'avanzare',
+  'mettere':'costruire','posare':'mettere',
+  'aprire':'trovare','chiudere':'sigillare',
+  'tornare':'camminare','seguire':'camminare',
+  'crescere':'creare','cambiare':'trasformare',
+  'scegliere':'sapere','decidere':'sapere',
+  'resistere':'difendere','cedere':'cadere',
+  'odiare':'tradire','temere':'paura',
+  'sperare':'desiderare','aspettare':'silenzio',
+  // sostantivi
+  'speranza':'desiderio','paura':'terrore',
+  'forza':'potere','debolezza':'debole',
+  'onore':'gloria','vergogna':'tradimento',
+  'legame':'patto','vincolo':'patto',
+  'ombra':'oscuro','luce':'luminoso',
+  'voce':'parlare','suono':'parlare',
+  'cammino':'strada','viaggio':'strada',
+  'confine':'mura','frontiera':'mura',
+  'alleato':'fedele','nemico':'traditore',
+  'scelta':'destino','volontà':'potere',
+};
+
 function fuzzyLookup(normWord) {
   if (!normWord || normWord.length < 2) return null;
   // Exact match first
   if (vocab[normWord]) return { key: normWord, dem: vocab[normWord], distance: 0, exact: true };
+
+  // Semantic fallback — priorità al senso, non al suono
+  if (semanticFallback[normWord]) {
+    const semKey = semanticFallback[normWord];
+    if (vocab[semKey]) return { key: semKey, dem: vocab[semKey], distance: 1, exact: false };
+  }
 
   const keys = Object.keys(vocab);
   let best = null, bestScore = Infinity;
@@ -1856,6 +1960,142 @@ function translateItaDem(text) {
   // MARCIARE
   addV(['marcia','marcio','marciano'], 'marciare', 'present');
   addV(['marciò','marciai','marciarono','marciato'], 'marciare', 'past');
+
+  // VERBI COMUNI AGGIUNTI
+  addV(['faccio','fai','fa','facciamo','fate','fanno'], 'fare', 'present');
+  addV(['fece','feci','fecero','fatto','fatta'], 'fare', 'past');
+  addV(['farò','farai','farà','faremo','farete','faranno'], 'fare', 'future');
+
+  addV(['posso','puoi','può','possiamo','potete','possono'], 'potere', 'present');
+  addV(['poteva','potevo','potevano','potuto'], 'potere', 'past');
+  addV(['potrò','potrai','potrà','potremo','potrete','potranno'], 'potere', 'future');
+
+  addV(['voglio','vuoi','vuole','vogliamo','volete','vogliono'], 'volere', 'present');
+  addV(['voleva','volevo','volevano','voluto','voluta'], 'volere', 'past');
+  addV(['vorrò','vorrai','vorrà','vorremo','vorrete','vorranno'], 'volere', 'future');
+
+  addV(['so','sai','sa','sappiamo','sapete','sanno'], 'sapere', 'present');
+  addV(['sapeva','sapevo','sapevano','saputo'], 'sapere', 'past');
+  addV(['saprò','saprai','saprà','sapremo','saprete','sapranno'], 'sapere', 'future');
+
+  addV(['vado','vai','va','andiamo','andate','vanno'], 'andare', 'present');
+  addV(['andò','andai','andarono','andato','andata'], 'andare', 'past');
+  addV(['andrò','andrai','andrà','andremo','andrete','andranno'], 'andare', 'future');
+
+  addV(['vengo','vieni','viene','veniamo','venite','vengono'], 'venire', 'present');
+  addV(['venne','venni','vennero','venuto','venuta'], 'venire', 'past');
+  addV(['verrò','verrai','verrà','verremo','verrete','verranno'], 'venire', 'future');
+
+  addV(['do','dai','dà','diamo','date','danno'], 'dare', 'present');
+  addV(['diede','detti','diedero','dato','data'], 'dare', 'past');
+  addV(['darò','darai','darà','daremo','darete','daranno'], 'dare', 'future');
+
+  addV(['sto','stai','sta','stiamo','state','stanno'], 'stare', 'present');
+  addV(['stette','stetti','stettero','stato','stata'], 'stare', 'past');
+  addV(['starò','starai','starà','staremo','starete','staranno'], 'stare', 'future');
+
+  addV(['dico','dici','dice','diciamo','dite','dicono'], 'dire', 'present');
+  addV(['disse','dissi','dissero','detto','detta'], 'dire', 'past');
+  addV(['dirò','dirai','dirà','diremo','direte','diranno'], 'dire', 'future');
+
+  addV(['vedo','vedi','vede','vediamo','vedete','vedono'], 'vedere', 'present');
+  addV(['vide','vidi','videro','visto','vista'], 'vedere', 'past');
+  addV(['vedrò','vedrai','vedrà','vedremo','vedrete','vedranno'], 'vedere', 'future');
+
+  addV(['sento','senti','sente','sentiamo','sentite','sentono'], 'sentire', 'present');
+  addV(['sentì','sentii','sentirono','sentito','sentita'], 'sentire', 'past');
+  addV(['sentirò','sentirai','sentirà','sentiranno'], 'sentire', 'future');
+
+  addV(['penso','pensi','pensa','pensiamo','pensano'], 'pensare', 'present');
+  addV(['pensò','pensai','pensarono','pensato'], 'pensare', 'past');
+  addV(['penserò','penserai','penserà','penseranno'], 'pensare', 'future');
+
+  addV(['credo','credi','crede','crediamo','credono'], 'credere', 'present');
+  addV(['credette','credetti','credettero','creduto'], 'credere', 'past');
+  addV(['crederò','crederai','crederà','crederanno'], 'credere', 'future');
+
+  addV(['capisco','capisci','capisce','capiamo','capiscono'], 'capire', 'present');
+  addV(['capì','capii','capirono','capito','capita'], 'capire', 'past');
+  addV(['capirò','capirai','capirà','capiranno'], 'capire', 'future');
+
+  addV(['metto','metti','mette','mettiamo','mettono'], 'mettere', 'present');
+  addV(['mise','misi','misero','messo','messa'], 'mettere', 'past');
+  addV(['metterò','metterai','metterà','metteranno'], 'mettere', 'future');
+
+  addV(['tengo','tieni','tiene','teniamo','tengono'], 'tenere', 'present');
+  addV(['tenne','tenni','tennero','tenuto','tenuta'], 'tenere', 'past');
+  addV(['terrò','terrai','terrà','terranno'], 'tenere', 'future');
+
+  addV(['torno','torni','torna','torniamo','tornano'], 'tornare', 'present');
+  addV(['tornò','tornai','tornarono','tornato'], 'tornare', 'past');
+  addV(['tornerò','tornerai','tornerà','torneranno'], 'tornare', 'future');
+
+  addV(['resto','resti','resta','restiamo','restano','rimango','rimani','rimane','rimaniamo','rimangono'], 'restare', 'present');
+  addV(['rimase','rimasì','rimasero','rimasto','rimasta'], 'restare', 'past');
+  addV(['resterò','resterai','resterà','resteranno'], 'restare', 'future');
+
+  addV(['apro','apri','apre','apriamo','aprono'], 'aprire', 'present');
+  addV(['aprì','aprii','aprirono','aperto','aperta'], 'aprire', 'past');
+  addV(['aprirò','aprirai','aprirà','apriranno'], 'aprire', 'future');
+
+  addV(['chiudo','chiudi','chiude','chiudiamo','chiudono'], 'chiudere', 'present');
+  addV(['chiuse','chiusi','chiusero','chiuso','chiusa'], 'chiudere', 'past');
+  addV(['chiuderò','chiuderai','chiuderà','chiuderanno'], 'chiudere', 'future');
+
+  addV(['seguo','segui','segue','seguiamo','seguono'], 'seguire', 'present');
+  addV(['seguì','seguii','seguirono','seguito','seguita'], 'seguire', 'past');
+  addV(['seguirò','seguirai','seguirà','seguiranno'], 'seguire', 'future');
+
+  addV(['conosco','conosci','conosce','conosciamo','conoscono'], 'conoscere', 'present');
+  addV(['conobbe','conobbi','conobbero','conosciuto'], 'conoscere', 'past');
+  addV(['conoscerò','conoscerai','conoscerà','conosceranno'], 'conoscere', 'future');
+
+  addV(['aspetto','aspetti','aspetta','aspettiamo','aspettano'], 'aspettare', 'present');
+  addV(['aspettò','aspettai','aspettarono','aspettato'], 'aspettare', 'past');
+  addV(['aspetterò','aspetterai','aspetterà','aspetteranno'], 'aspettare', 'future');
+
+  addV(['chiedo','chiedi','chiede','chiediamo','chiedono'], 'chiedere', 'present');
+  addV(['chiese','chiesi','chiesero','chiesto'], 'chiedere', 'past');
+  addV(['chiederò','chiederai','chiederà','chiederanno'], 'chiedere', 'future');
+
+  addV(['scrivo','scrivi','scrive','scriviamo','scrivono'], 'scrivere', 'present');
+  addV(['scrisse','scrissi','scrissero','scritto','scritta'], 'scrivere', 'past');
+  addV(['scriverò','scriverai','scriverà','scriveranno'], 'scrivere', 'future');
+
+  addV(['leggo','leggi','legge','leggiamo','leggono'], 'leggere', 'present');
+  addV(['lesse','lessi','lessero','letto','letta'], 'leggere', 'past');
+  addV(['leggerò','leggerai','leggerà','leggeranno'], 'leggere', 'future');
+
+  addV(['odio','odi','odia','odiamo','odiano'], 'odiare', 'present');
+  addV(['odiò','odiai','odiarono','odiato'], 'odiare', 'past');
+  addV(['odierò','odierai','odierà','odieranno'], 'odiare', 'future');
+
+  addV(['temo','temi','teme','temiamo','temono'], 'temere', 'present');
+  addV(['temette','temetti','temettero','temuto'], 'temere', 'past');
+  addV(['temerò','temerai','temerà','temeranno'], 'temere', 'future');
+
+  addV(['spero','speri','spera','speriamo','sperano'], 'sperare', 'present');
+  addV(['sperò','sperai','sperarono','sperato'], 'sperare', 'past');
+  addV(['spererò','spererai','spererà','spereranno'], 'sperare', 'future');
+
+  addV(['scelgo','scegli','sceglie','scegliamo','scelgono'], 'scegliere', 'present');
+  addV(['scelse','scelsi','scelsero','scelto','scelta'], 'scegliere', 'past');
+  addV(['sceglierò','sceglierai','sceglierà','sceglieranno'], 'scegliere', 'future');
+
+  addV(['resisto','resisti','resiste','resistiamo','resistono'], 'resistere', 'present');
+  addV(['resistette','resistetti','resistettero','resistito'], 'resistere', 'past');
+  addV(['resisterò','resisterai','resisterà','resisteranno'], 'resistere', 'future');
+
+  addV(['cedo','cedi','cede','cediamo','cedono'], 'cedere', 'present');
+  addV(['cedette','cedetti','cedettero','ceduto'], 'cedere', 'past');
+
+  addV(['cresco','cresci','cresce','cresciamo','crescono'], 'crescere', 'present');
+  addV(['crebbe','crebbi','crebbero','cresciuto'], 'crescere', 'past');
+  addV(['crescerò','crescerai','crescerà','cresceranno'], 'crescere', 'future');
+
+  addV(['cambio','cambi','cambia','cambiamo','cambiano'], 'cambiare', 'present');
+  addV(['cambiò','cambiai','cambiarono','cambiato'], 'cambiare', 'past');
+  addV(['cambierò','cambierai','cambierà','cambieranno'], 'cambiare', 'future');
 
   // FUTURI AGGIUNTIVI
   addV(['griderei','griderò','griderai','griderà','grideranno'], 'gridare', 'future');
