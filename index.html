@@ -1806,7 +1806,7 @@ function translateItaDem(text) {
   addV(['doveva','dovevo','dovevamo','dovevano','dovuto'], 'dovere', 'past');
   addV(['dovrò','dovrai','dovrà','dovremo','dovrete','dovranno'], 'dovere', 'future');
   // ESSERE
-  addV(['sono','sei','è','e','siamo','siete'], 'essere', 'present');
+  addV(['sono','sei','e','siamo','siete'], 'essere', 'present');  // normalize strips accents: è→e
   addV(['era','eri','eravamo','eravate','erano','fu','fui','furono','stato','stata','stati','state'], 'essere', 'past');
   addV(['sarò','sarai','sarà','saremo','sarete','saranno'], 'essere', 'future');
   // AVERE
@@ -2270,6 +2270,14 @@ function translateDemIta(text) {
   const cleaned = text.replace(/:nar:|:nn:|:n:/g, ' ').trim();
   const words = cleaned.split("'").map(w => w.trim()).filter(Boolean);
 
+  // Mappa pronomi → forma possessiva per contesto
+  const possessiveMap = {
+    'vok': 'mio', 'zik': 'tuo', 'thul': 'suo',
+    'ruk': 'nostro', 'skul': 'vostro', 'drak': 'loro'
+  };
+  // Pronomi "puri" (senza suffissi) che in contesto post-sostantivo = possessivo
+  const pronounKeys = new Set(Object.keys(possessiveMap));
+
   const sufMap = [
     ['-morg-zhar', { label: 'maschile plurale', type: 'gender' }],
     ['-shal-zhar', { label: 'femminile plurale', type: 'gender' }],
@@ -2322,6 +2330,15 @@ function translateDemIta(text) {
 
     if (!word) return `<span style="color:var(--text-dim)">[${w}]</span>`;
 
+    // Contesto possessivo: se è un pronome puro (nessun suffisso) e segue un sostantivo → possessivo
+    const isPronounOnly = pronounKeys.has(base) && suffixes.length === 0;
+    const prevWord = htmlParts[htmlParts.length - 1];
+    const prevIsNoun = prevWord && !prevWord.includes('-futuro') && !prevWord.includes('-passato')
+                    && !prevWord.includes('Zovak') && !prevWord.includes('non ');
+    const displayWord = (isPronounOnly && prevIsNoun && possessiveMap[base])
+      ? possessiveMap[base]
+      : word;
+
     // Separa i tipi di suffisso
     const negation = suffixes.find(s => s.type === 'neg');
     const tense    = suffixes.find(s => s.type === 'tense');
@@ -2335,7 +2352,7 @@ function translateDemIta(text) {
     }
 
     // Parola principale (sempre all'infinito nel reverse)
-    html += `<span style="color:var(--text)">${word}</span>`;
+    html += `<span style="color:var(--text)">${displayWord}</span>`;
 
     // Tempo dopo la parola
     if (tense) {
