@@ -2103,15 +2103,31 @@ function translateDemIta(text) {
 
     if (!word) return `<span style="color:var(--text-dim)">[${w}]</span>`;
 
-    // Costruisci output con suffissi colorati
-    let html = `<span style="color:var(--text)">${word}</span>`;
-    for (const { label, type } of suffixes) {
-      let color;
-      if (type === 'tense') color = '#7ec8c8';
-      else if (type === 'neg') color = '#a78bfa';
-      else color = '#a0c4a0';
-      html += `<span style="color:${color};font-style:italic;font-size:0.88em"> -${label}</span>`;
+    // Separa i tipi di suffisso
+    const negation = suffixes.find(s => s.type === 'neg');
+    const tense    = suffixes.find(s => s.type === 'tense');
+    const genders  = suffixes.filter(s => s.type === 'gender');
+
+    let html = '';
+
+    // "non" prima della parola se c'è negazione
+    if (negation) {
+      html += `<span style="color:#a78bfa;font-style:italic;font-size:0.88em">non </span>`;
     }
+
+    // Parola principale (sempre all'infinito nel reverse)
+    html += `<span style="color:var(--text)">${word}</span>`;
+
+    // Tempo dopo la parola
+    if (tense) {
+      html += `<span style="color:#7ec8c8;font-style:italic;font-size:0.88em"> -${tense.label}</span>`;
+    }
+
+    // Genere/numero dopo
+    for (const g of genders) {
+      html += `<span style="color:#a0c4a0;font-style:italic;font-size:0.88em"> -${g.label}</span>`;
+    }
+
     return html;
   });
 
