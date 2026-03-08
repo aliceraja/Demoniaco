@@ -821,7 +821,7 @@ const vocab = {
   "vivere": "Driv",
   "volare": "Zhurk",
   "tradire": "Drakth",
-  "essere": "Zovak",
+  "dovere": "Skurvath",
   "avere": "Vrekul",
   "morto": "Dravth", "morta": "Dravth", "morti": "Dravth", "morte": "Dravth",
   "vivo": "Drivak", "viva": "Drivak",
@@ -1718,6 +1718,10 @@ function translateItaDem(text) {
   const verbMap = {};
   function addV(forms, root, tense='present') { forms.forEach(f => verbMap[f] = {root, tense}); }
 
+  // DOVERE
+  addV(['devo','devi','deve','dobbiamo','dovete','devono'], 'dovere', 'present');
+  addV(['doveva','dovevo','dovevamo','dovevano','dovuto'], 'dovere', 'past');
+  addV(['dovrò','dovrai','dovrà','dovremo','dovrete','dovranno'], 'dovere', 'future');
   // ESSERE
   addV(['sono','sei','è','e','siamo','siete'], 'essere', 'present');
   addV(['era','eri','eravamo','eravate','erano','fu','fui','furono','stato','stata','stati','state'], 'essere', 'past');
@@ -1853,7 +1857,27 @@ function translateItaDem(text) {
   addV(['marcia','marcio','marciano'], 'marciare', 'present');
   addV(['marciò','marciai','marciarono','marciato'], 'marciare', 'past');
 
-  // Suffissi temporali demoniaci
+  // FUTURI AGGIUNTIVI
+  addV(['griderei','griderò','griderai','griderà','grideranno'], 'gridare', 'future');
+  addV(['fuggirò','fuggirai','fuggirà','fuggiranno'], 'fuggire', 'future');
+  addV(['invocherò','invocherai','invocherà','invocheranno'], 'invocare', 'future');
+  addV(['brucerò','brucerai','brucerà','bruceranno'], 'bruciare', 'future');
+  addV(['sopravviverò','sopravviverai','sopravviverà','sopravviveranno'], 'sopravvivere', 'future');
+  addV(['giurerò','giurerai','giurerà','giureranno'], 'giurare', 'future');
+  addV(['cercherò','cercherai','cercherà','cercheranno'], 'cercare', 'future');
+  addV(['nascerò','nascerai','nascerà','nasceranno'], 'nascere', 'future');
+  addV(['pregherò','pregherai','pregherà','pregheranno'], 'pregare', 'future');
+  addV(['condannerò','condannerai','condannerà','condanneranno'], 'condannare', 'future');
+  addV(['tacerò','tacerai','tacerà','taceranno'], 'tacere', 'future');
+  addV(['curerò','curerai','curerà','cureranno'], 'curare', 'future');
+  addV(['difenderò','difenderai','difenderà','difenderanno'], 'difendere', 'future');
+  addV(['nuoterò','nuoterai','nuoterà','nuoteranno'], 'nuotare', 'future');
+  addV(['avanzerò','avanzerai','avanzerà','avanzeranno'], 'avanzare', 'future');
+  addV(['camminerò','camminerai','camminerà','cammineranno'], 'camminare', 'future');
+  addV(['proteggerò','proteggerai','proteggerà','proteggeranno'], 'proteggere', 'future');
+  addV(['sacrificherò','sacrificherai','sacrificherà','sacrificheranno'], 'sacrificare', 'future');
+  addV(['berrò','berrai','berrà','berranno'], 'bere', 'future');
+  addV(['marcerò','marcerai','marcerà','marceranno'], 'marciare', 'future');
   const tenseSuffix = { 'past': '-vrath', 'future': '-thruk', 'present': '' };
 
   let i = 0;
@@ -2025,67 +2049,73 @@ function translateItaDem(text) {
 // =============================================
 function translateDemIta(text) {
   const cleaned = text.replace(/:nar:|:nn:|:n:/g, ' ').trim();
-  // Split by ' (apostrophe separator) but keep Kh-xxx together
   const words = cleaned.split("'").map(w => w.trim()).filter(Boolean);
-  
-  const results = words.map(w => {
-    // Number block: Kh-digit-digit...
+
+  const sufMap = [
+    ['-morg-zhar', { label: 'maschile plurale', type: 'gender' }],
+    ['-shal-zhar', { label: 'femminile plurale', type: 'gender' }],
+    ['-morg',      { label: 'maschile', type: 'gender' }],
+    ['-shal',      { label: 'femminile', type: 'gender' }],
+    ['-zhar',      { label: 'plurale', type: 'gender' }],
+    ['-vrath',     { label: 'passato', type: 'tense' }],
+    ['-thruk',     { label: 'futuro', type: 'tense' }],
+    ['-nux',       { label: 'negazione', type: 'neg' }],
+  ];
+
+  const htmlParts = words.map(w => {
+    // Numero
     if (/^Kh-/i.test(w)) {
       const parts = w.slice(3).split('-');
       const revDigit = {'velu':'1','gruz':'2','thal':'3','zuvu':'4','drin':'5','sorith':'6','brak':'7','vulth':'8','xirn':'9'};
-      const digits = parts.map(p => revDigit[p.toLowerCase()] || p);
-      return digits.join('');
+      return parts.map(p => revDigit[p.toLowerCase()] || p).join('');
     }
 
     const key = w.toLowerCase();
     let base = key;
-    let notes = [];
+    let suffixes = []; // { label, type }
 
-    // Strip ALL suffixes (può esserci -vrath-nux o -zhar-nux ecc.)
-    const sufMap = [
-      ['-morg-zhar', '(maschi plurale)'],
-      ['-shal-zhar', '(femmine plurale)'],
-      ['-morg', '(maschile)'],
-      ['-shal', '(femminile)'],
-      ['-zhar', '(plurale)'],
-      ['-vrath', '(passato)'],
-      ['-thruk', '(futuro)'],
-      ['-nux', '(negazione)'],
-    ];
-
-    // Loop per strippare tutti i suffissi presenti (es. -vrath-nux)
+    // Strippa tutti i suffissi in sequenza
     let changed = true;
     while (changed) {
       changed = false;
-      for (const [suf, label] of sufMap) {
+      for (const [suf, info] of sufMap) {
         if (base.endsWith(suf)) {
           base = base.slice(0, -suf.length);
-          notes.unshift(label); // unshift per mantenere ordine logico
+          suffixes.unshift(info);
           changed = true;
           break;
         }
       }
     }
 
+    // Lookup
     const ita = vocabReverse[base] || vocabReverse[key];
-    if (ita) return ita + (notes.length ? ' ' + notes.join(' ') : '');
+    const word = ita ? ita : (() => {
+      const revKeys = Object.keys(vocabReverse);
+      let bestKey = null, bestD = Infinity;
+      const maxD = Math.max(1, Math.floor(base.length * 0.3));
+      for (const rk of revKeys) {
+        const d = levenshtein(base, rk);
+        if (d < bestD) { bestD = d; bestKey = rk; }
+      }
+      return (bestKey && bestD <= maxD) ? `~${vocabReverse[bestKey]}` : null;
+    })();
 
-    // Fuzzy reverse
-    const revKeys = Object.keys(vocabReverse);
-    let bestKey = null, bestD = Infinity;
-    const maxD = Math.max(1, Math.floor(base.length * 0.3));
-    for (const rk of revKeys) {
-      const d = levenshtein(base, rk);
-      if (d < bestD) { bestD = d; bestKey = rk; }
-    }
-    if (bestKey && bestD <= maxD) {
-      return `~${vocabReverse[bestKey]}` + (notes.length ? ' ' + notes.join(' ') : '');
-    }
+    if (!word) return `<span style="color:var(--text-dim)">[${w}]</span>`;
 
-    return `[${w}]`;
+    // Costruisci output con suffissi colorati
+    let html = `<span style="color:var(--text)">${word}</span>`;
+    for (const { label, type } of suffixes) {
+      let color;
+      if (type === 'tense') color = '#7ec8c8';
+      else if (type === 'neg') color = '#a78bfa';
+      else color = '#a0c4a0';
+      html += `<span style="color:${color};font-style:italic;font-size:0.88em"> -${label}</span>`;
+    }
+    return html;
   });
 
-  return results.filter(Boolean).join(' ');
+  return htmlParts.filter(Boolean).join(' ');
 }
 
 // =============================================
@@ -2109,7 +2139,7 @@ function translate() {
   if (direction === 'ita-dem') {
     outEl.innerHTML = translateItaDem(input);
   } else {
-    outEl.textContent = translateDemIta(input);
+    outEl.innerHTML = translateDemIta(input);
   }
 }
 
