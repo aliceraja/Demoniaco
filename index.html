@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DEMONIACO — Traduttore</title>
+<title>Lingua del Vuoto — Traduttore</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0608;
-    --bg2: #110a0d;
-    --surface: #1a0f13;
-    --border: #3d1e28;
+    --bg: #120810;
+    --bg2: #1a0f14;
+    --surface: #221318;
+    --border: #4d2535;
     --accent: #c0392b;
     --accent2: #8b1a1a;
     --glow: #ff4444;
-    --text: #e8d5c4;
-    --text-dim: #8a6a5a;
+    --text: #edddd0;
+    --text-dim: #9a7a6a;
     --gold: #c9a84c;
   }
 
@@ -242,7 +242,7 @@
   .output-text .pause-short { color: var(--accent2); font-style: normal; font-size: 14px; }
   .output-text .pause-long { color: var(--accent); font-style: normal; font-size: 14px; }
   .output-text .pause-ritual { color: var(--gold); font-style: normal; font-size: 14px; }
-  .output-text .separator { color: var(--accent2); font-style: normal; opacity: 0.7; }
+  .output-text .separator { color: #d4607a; font-style: normal; font-weight: bold; }
 
   /* Action bar */
   .action-bar {
@@ -323,7 +323,7 @@
     font-family: 'Cinzel Decorative', serif;
     font-size: 13px;
     letter-spacing: 0.3em;
-    color: var(--accent2);
+    color: #e87050;
     text-transform: uppercase;
     margin-bottom: 20px;
     display: flex;
@@ -362,29 +362,30 @@
     font-family: 'Cinzel Decorative', serif;
     font-size: 9px;
     letter-spacing: 0.3em;
-    color: var(--gold);
+    color: #e8a070;
     text-transform: uppercase;
     margin-bottom: 12px;
   }
 
   .grammar-card p, .grammar-card li {
-    font-size: 14px;
-    color: var(--text-dim);
-    line-height: 1.7;
+    font-size: 15px;
+    color: #e0b8a0;
+    line-height: 1.8;
   }
 
   .grammar-card ul { list-style: none; }
 
-  .grammar-card li::before { content: '› '; color: var(--accent2); }
+  .grammar-card li::before { content: '› '; color: #e05050; }
 
   .grammar-card code {
-    background: rgba(192,57,43,0.15);
-    border: 1px solid rgba(192,57,43,0.2);
+    background: rgba(220,80,60,0.25);
+    border: 1px solid rgba(220,80,60,0.45);
     border-radius: 3px;
-    padding: 1px 6px;
-    font-size: 13px;
-    color: var(--text);
+    padding: 2px 7px;
+    font-size: 14px;
+    color: #ffd0b0;
     font-family: 'Crimson Pro', serif;
+    font-weight: 600;
   }
 
   /* Vocabolario browser */
@@ -397,7 +398,7 @@
     font-family: 'Cinzel Decorative', serif;
     font-size: 13px;
     letter-spacing: 0.3em;
-    color: var(--accent2);
+    color: #e87050;
     text-transform: uppercase;
     margin-bottom: 16px;
     display: flex;
@@ -466,8 +467,8 @@
     background: rgba(139,26,26,0.15);
   }
 
-  .vocab-ita { font-size: 13px; color: var(--text-dim); }
-  .vocab-dem { font-size: 13px; color: var(--text); font-style: italic; }
+  .vocab-ita { font-size: 13px; color: #e0b8a0; }
+  .vocab-dem { font-size: 13px; color: #ffd0b0; font-style: italic; }
 
   /* Animations */
   @keyframes fadeDown {
@@ -483,6 +484,7 @@
   .unmatched { color: var(--text-dim); font-style: normal; border-bottom: 1px dashed var(--text-dim); cursor: help; }
   .fuzzy { color: var(--gold); font-style: italic; border-bottom: 1px dotted var(--gold); cursor: help; opacity: 0.9; }
   .morph { color: #a0c4a0; font-style: italic; cursor: help; opacity: 0.9; }
+  .negated { color: #a78bfa; font-style: italic; cursor: help; }
   .legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 8px 24px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.1); font-size: 11px; color: var(--text-dim); letter-spacing: 0.03em; }
   .legend span { display: flex; align-items: center; gap: 5px; }
   .ldot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
@@ -494,9 +496,8 @@
 <div class="container">
 
   <header>
-    <div class="sigil">⛧</div>
     <h1>DEMONIACO</h1>
-    <p class="subtitle">Traduttore della Lingua del Vuoto di Raja Dunia</p>
+    <p class="subtitle">Traduttore della lingua del vuoto di Cronache di Raja Dunia</p>
     <div class="divider">
       <div class="divider-line"></div>
       <div class="divider-icon">✦</div>
@@ -533,8 +534,9 @@
     </div>
     <div class="legend">
       <span><span class="ldot" style="background:var(--text)"></span> Traduzione esatta</span>
-      <span><span class="ldot" style="background:var(--gold)"></span> Corrispondenza approssimata (passa il mouse per vedere)</span>
-      <span><span class="ldot" style="background:#a0c4a0"></span> Forma morfologica (plurale/genere)</span>
+      <span><span class="ldot" style="background:var(--gold)"></span> Corrispondenza approssimata</span>
+      <span><span class="ldot" style="background:#a0c4a0"></span> Forma morfologica</span>
+      <span><span class="ldot" style="background:#a78bfa"></span> Forma negativa (-nux)</span>
       <span><span class="ldot" style="background:var(--text-dim)"></span> Termine non trovato</span>
     </div>
   </div>
@@ -545,7 +547,7 @@
       ✦ Regole grammaticali
       <span class="grammar-toggle" id="grammar-toggle">▾</span>
     </div>
-    <div class="grammar-content" id="grammar-content">
+    <div class="grammar-content visible" id="grammar-content">
       <div class="grammar-card">
         <h3>Struttura della frase</h3>
         <ul>
@@ -566,6 +568,15 @@
         </ul>
       </div>
       <div class="grammar-card">
+        <h3>Negazione</h3>
+        <ul>
+          <li>"non" / "no" → suffisso <code>-nux</code> sulla parola seguente</li>
+          <li>Es: <code>non morire</code> → <code>Dravth-nux</code></li>
+          <li>Es: <code>non tradire</code> → <code>Drakthul-nux</code></li>
+          <li>Es: <code>io non sono</code> → <code>Vok'Driv-nux</code></li>
+        </ul>
+      </div>
+      <div class="grammar-card">
         <h3>Pronomi</h3>
         <ul>
           <li>Io / me / mi → <code>Vok</code></li>
@@ -578,13 +589,13 @@
       </div>
       <div class="grammar-card">
         <h3>Numerazione</h3>
-        <p>Prefisso <code>Kh-</code> + cifre in lettere, separate da <code>'</code>, racchiuse tra <code>:n:</code></p>
+        <p>Prefisso <code>Kh-</code> + cifre in lettere separate da <code>'</code>, racchiuse tra <code>:n:</code></p>
         <ul>
-          <li>1=Velu 2=Gruz 3=Thal</li>
-          <li>4=Zuvu 5=Drin 6=Sorith</li>
-          <li>7=Brak 8=Vulth 9=Xirn</li>
+          <li>1=<code>Velu</code> 2=<code>Gruz</code> 3=<code>Thal</code></li>
+          <li>4=<code>Zuvu</code> 5=<code>Drin</code> 6=<code>Sorith</code></li>
+          <li>7=<code>Brak</code> 8=<code>Vulth</code> 9=<code>Xirn</code></li>
         </ul>
-        <p style="margin-top:6px">Es: 1723 → <code>:n:Kh-Velu'Brak'Gruz'Thal:n:</code></p>
+        <p style="margin-top:8px">Es: 1723 → <code>:n:Kh-Velu'Brak'Gruz'Thal:n:</code></p>
       </div>
     </div>
   </div>
@@ -1518,7 +1529,7 @@ function translateItaDem(text) {
     'di','da','in','con','su','per','tra','fra','a','al','ai','allo','alla','agli','alle',
     'del','della','dei','degli','delle','dal','dalla','dai','dagli','dalle',
     'nel','nella','nei','negli','nelle','sul','sulla','sui','sugli','sulle',
-    'col','coi','e','o','ma','che','se','non','anche','però','quindi','allora'
+    'col','coi','e','o','ma','che','se','anche','però','quindi','allora'
   ]);
 
   // Coniugazioni italiane → radice del verbo nel vocabolario
@@ -1634,6 +1645,35 @@ function translateItaDem(text) {
       i++; continue;
     }
 
+    // --- NEGAZIONE: "non" / "no" → suffisso -nar sulla parola successiva ---
+    if (norm === 'non' || norm === 'no') {
+      // Cerca la prossima parola traducibile e applica -nar
+      let j = i + 1;
+      while (j < wordTokens.length && skipWords.has(normalize(wordTokens[j]))) j++;
+      if (j < wordTokens.length) {
+        const nextToken = wordTokens[j];
+        const nextNorm = normalize(nextToken);
+        // Prova a tradurre la parola successiva
+        let dem = vocab[nextNorm] || (verbMap[nextNorm] && vocab[verbMap[nextNorm]]);
+        if (!dem) {
+          const morph = detectItalianMorphology(nextToken);
+          if (morph) dem = morph.dem + morph.suffixes.join('');
+        }
+        if (!dem) {
+          const fuzzy = fuzzyLookup(nextNorm);
+          if (fuzzy) dem = fuzzy.dem;
+        }
+        if (dem) {
+          parts.push({ type: 'word', dem: dem + '-nux', ita: 'non ' + nextToken, exact: true, negated: true });
+          i = j + 1;
+          continue;
+        }
+      }
+      // Se non trova nulla dopo, emette Nux da solo
+      parts.push({ type: 'word', dem: 'Nux', ita: 'non', exact: true, negated: true });
+      i++; continue;
+    }
+
     // --- SKIP articoli/preposizioni ---
     if (skipWords.has(norm)) { i++; continue; }
 
@@ -1716,7 +1756,9 @@ function translateItaDem(text) {
     }
     if (p.type === 'word') {
       if (!first) html += `<span class="separator">'</span>`;
-      if (p.exact) {
+      if (p.negated) {
+        html += `<span class="negated" title="${p.ita}">${p.dem}</span>`;
+      } else if (p.exact) {
         html += `<span title="${p.ita}">${p.dem}</span>`;
       } else if (p.distance !== undefined) {
         html += `<span class="fuzzy" title="~${p.ita} → ${p.fuzzyMatch}">${p.dem}</span>`;
@@ -1878,6 +1920,9 @@ function buildVocabGrid(filter = '') {
 function filterVocab() {
   buildVocabGrid(document.getElementById('vocab-search').value);
 }
-</script>
+</script>  <footer style="text-align:center; padding: 40px 24px 32px; color: var(--text-dim); font-size: 13px; letter-spacing: 0.15em; font-style: italic; border-top: 1px solid var(--border); margin-top: 60px;">
+    Realizzato e creato per il GDR <span style="color: var(--gold); font-style: normal; font-family: 'Cinzel Decorative', serif; font-size: 11px;">Cronache di Raja Dunia</span>
+  </footer>
+
 </body>
 </html>
